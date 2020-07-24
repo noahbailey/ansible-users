@@ -1,0 +1,23 @@
+# Add Manage users to the system: 
+
+
+- name: "Enabled Users"
+  user: 
+    name: "{{ item.name }}"
+    comment: "{{ item.full_name }}"
+    create_home: true 
+    groups: sudo
+    append: yes 
+    password: "{{ item.passwd | default('!') }}"
+    shell: "/bin/bash"
+  loop: "{{ users }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "SSH Keys"
+  authorized_key: 
+    user: "{{ item.name }}"
+    key: "{{ item.pub_key }}"
+  loop: "{{ users }}"
+  loop_control:
+    label: "{{ item.name }}"
